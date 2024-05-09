@@ -20,7 +20,9 @@ Then do: git pull origin main on the VSCode workspace.
 This needs to be updated each time prior to running the bastion-instance.yml that sets up the bastion host on the VPC
 This is required because the bastion-instance.yml imports the vars/output_vars_IDs file in order to set up the bastion host on the VPC and 
 in the public subnet (subnet number 1 will be used)
-The local VSCode does not need to be updated with latest output_vars_IDs (not mandatory)
+
+IMPORTANT: it is important after getting VPC setup to pull the new output_vars_IDs file from the EC2 instance into VSCode to get rid of the older 
+file in VSCode and update it, so that the next push from VSCode has the same latest current IDs
 
 
 
@@ -239,6 +241,8 @@ Ansible uses SSH to the backend. Can’t do this from the ansible VPC so will ha
 The generated vars/output_vars_IDs from phase1 VPC stack rollout has all of the IDs of the AWS VPC objects and 
 plays a critical roll in the ansible phase2 rollout of the backend infrastructure.
 
+IMPORTANT: it is important after getting VPC setup to pull the new output_vars_IDs file from the EC2 instance into VSCode to get rid of the older 
+file in VSCode and update it, so that the next push from VSCode has the same latest current IDs
 
 
 
