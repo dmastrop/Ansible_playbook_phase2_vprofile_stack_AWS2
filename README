@@ -1,7 +1,7 @@
 # Projects 21 and 22
 
 
-# Overview for project21
+# Overview for project21 (main branch)
 
 Project21: Use ansible playbook to create complete VPC stack on AWS2. Note using an EC2 instance with ansible, botocore, boto3 and aws cli v2, python3,pip installed. Use IAM role attached to ansible EC2 instance for authentication.
 
@@ -18,7 +18,9 @@ For the vars/output_vars_IDs file, this file is created on ansible-EC2-project21
 After it is created on the ansible EC2 instance do: git push origin main to remote github repo
 Then do: git pull origin main on the VSCode workspace. 
 This needs to be updated each time prior to running the bastion-instance.yml that sets up the bastion host on the VPC
-This is required because the bastion-instance.yml imports the vars/output_vars_IDs file in order to set up the bastion host on the VPC and in the public subnet (subnet number 1 will be used)
+This is required because the bastion-instance.yml imports the vars/output_vars_IDs file in order to set up the bastion host on the VPC and 
+in the public subnet (subnet number 1 will be used)
+The local VSCode does not need to be updated with latest output_vars_IDs (not mandatory)
 
 
 
@@ -183,11 +185,36 @@ This is the ec2_instance module task
 
 
 
-# Overview for project22
+# Overview for project22 (vprofile-stack-phase2 branch)
 
 Project22: Phase2 of project21. With VPC stack, provision private subnets for backed servers for 
 application, security groups for them, bastion host, EC2 instances for rabbitmq, memcached, mysql, t
 omcat, nginx, and a front end Applicaton loadbalancer, All using Ansible playbooks for project3 lift 
 and shift style rollout.
+
+On public subnet create application LB
+Private subnets: create security groups and subnets for the backend servers
+2 private subnets (for nginix front end, tomcat, rabbitmq, Memcached, mysql)
+Bastion host and new key pairs
+This will compelte the infrastructure and the setup will be ready for phase3, deployment of the services and the application (.war from source)
+to the infrastucture.
+
+
+## Software version control
+
+Will be the same as phase 1 using the ansible-EC2-project21 instance to run the actual ansibile-playbook command
+on the various playbooks.  The branches in the respository are the following:
+main(phase1) 
+vprofile-stack-phase2 
+vprofile-stack-phase3
+
+Use a git push from VSCode to github repo and git pull on the ansible-EC2-project21 instance to update the
+code on the ansible controller instance.
+
+
+
+
+
+
 
 
