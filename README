@@ -236,6 +236,12 @@ AWS VPC peering is another option but too complex for the scope of this implemen
 
 Ansible uses SSH to the backend. Can’t do this from the ansible VPC so will have to use a bastion host.
 
+The generated vars/output_vars_IDs from phase1 VPC stack rollout has all of the IDs of the AWS VPC objects and 
+plays a critical roll in the ansible phase2 rollout of the backend infrastructure.
+
+
+
+
 
 
 
