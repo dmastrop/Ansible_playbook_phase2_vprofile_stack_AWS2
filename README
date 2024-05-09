@@ -178,3 +178,16 @@ This is the ec2_instance module task
     
     - debug:
         var: bastionHost_out_variable
+
+
+
+
+
+# Overview for project22
+
+Project22: Phase2 of project21. With VPC stack, provision private subnets for backed servers for 
+application, security groups for them, bastion host, EC2 instances for rabbitmq, memcached, mysql, t
+omcat, nginx, and a front end Applicaton loadbalancer, All using Ansible playbooks for project3 lift 
+and shift style rollout.
+
+
