@@ -242,6 +242,27 @@ plays a critical roll in the ansible phase2 rollout of the backend infrastructur
 
 
 
+# Consolidate the vars file for vpc_setup and bastion_setup all into vpc_setup. Put the bastion vars info in the vpc_setup
+
+
+
+
+# import vpc-setup.yml and bastion-instance.yml phase1 ansible playbooks into site.yml, which will be run to 
+provision both the VPC stack and the bastion host.
+
+
+
+
+# vpro-ec2-stack.yml
+
+This is the ansible playbook to provision the backend EC2 instances for the vprofile stack implementation.
+
+Note that ec2 module is deprecated and ec2_instance module is now used with some minor required changes between the two.
+Use the ec2_instance from phase1 bastion-instance.yml as a model of how to configure the ec2_instance task for backend ansible playbook.
+
+
+
+
 
 
 

@@ -1,0 +1,9 @@
+---
+- name: Setup the vprofile stack infrastructure elements
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  
+  tasks: 
+    - name: Import the VPC setup variables file that has vars for VPC and for bastion host
+      include_vars: vars/output_vars_IDs
