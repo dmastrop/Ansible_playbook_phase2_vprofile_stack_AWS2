@@ -185,6 +185,9 @@ This is the ec2_instance module task
 
 
 
+
+
+
 # Overview for project22 (vprofile-stack-phase2 branch)
 
 Project22: Phase2 of project21. With VPC stack, provision private subnets for backed servers for 
@@ -210,6 +213,29 @@ vprofile-stack-phase3
 
 Use a git push from VSCode to github repo and git pull on the ansible-EC2-project21 instance to update the
 code on the ansible controller instance.
+
+
+## Backend server implementation and provisioning requirements:
+
+The objectives for phase2 are:
+
+Fetch source code project21
+Execute VPC playbook
+New playbooks to launch EC2, ELB sec grp for vprofile, and keypairs
+
+
+Ansible as a controller uses SSH to push configurations to nodes.
+To get into Vprofile/application backend servers on the private subnet, a bastion host must be used with an interface on the private subnet. 
+Ansible controller ansible-EC2-project21 is in default VPC, so must use bastion host or launch controller in the private VPC
+For this project we will use a bastion host.
+Once in the private subnet of the VP, we can write playbooks for vprofile stack setup
+AWS VPC peering is another option but too complex for the scope of this implemenatation.
+
+
+
+Ansible uses SSH to the backend. Can’t do this from the ansible VPC so will have to use a bastion host.
+
+
 
 
 
