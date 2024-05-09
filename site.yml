@@ -1,5 +1,5 @@
 ---
 # both files are at the same level as site.yml (root of the repo)
--import_playbook: vpc-setup.yml
--import_playbook: bastion-instance.yml
+- import_playbook: vpc-setup.yml
+- import_playbook: bastion-instance.yml
 
