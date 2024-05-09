@@ -6,8 +6,10 @@
   gather_facts: no
   tasks:
     - name: Import bastion_setup variables file
-      include_vars: vars/bastion_setup
+      #include_vars: vars/bastion_setup
       # all variables below will be from this file.
+      # consolidated the bastion_setup vars file and put it into the common vpc_setup file
+      include_vars: vars/vpc_setup
 
 
     - name: Import the vars/output_vars file with all of the AWS object IDs
@@ -15,6 +17,7 @@
       # Note that this file is actually only created on the ansible EC2 instance and not on the VSCode workspace
       # Easiest way to do this is commit the change on the ansible EC2 instance and push to remote github repo
       # Then pull the file from the remote repo to the local VSCode worksapce. Then the local VSCode will have the latest code.
+      # This file will be overwritten each time a completely new VPC stack is deployed. The values will be updated accordingly.
 
     
     - name: vprofile bastion EC2 key
