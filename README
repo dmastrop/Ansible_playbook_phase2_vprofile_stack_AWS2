@@ -231,8 +231,6 @@ For this project we will use a bastion host.
 Once in the private subnet of the VP, we can write playbooks for vprofile stack setup
 AWS VPC peering is another option but too complex for the scope of this implemenatation.
 
-
-
 Ansible uses SSH to the backend. Can’t do this from the ansible VPC so will have to use a bastion host.
 
 
