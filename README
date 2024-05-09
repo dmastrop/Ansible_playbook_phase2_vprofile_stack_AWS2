@@ -214,6 +214,9 @@ vprofile-stack-phase3
 Use a git push from VSCode to github repo and git pull on the ansible-EC2-project21 instance to update the
 code on the ansible controller instance.
 
+The ansible-EC2-project21 instance has a local copy of the git remote repo. Use branch vprofile-stack-phase2 branch for this phase
+of the project development.
+
 
 ## Backend server implementation and provisioning requirements:
 
