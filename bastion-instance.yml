@@ -143,9 +143,9 @@
     # backup of original
     # insert the block below
     block: |
-      BastionSGid: "{{BastionSG_out_variable.group_id}}"
+      BastionSGid: {{BastionSG_out_variable.group_id}}
 
-
+    
 
 
 
