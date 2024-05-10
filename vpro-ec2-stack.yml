@@ -27,7 +27,7 @@
 
     - name: Save the private key into file loginkey_EC2_vprofile.pem
       copy:
-        content: "{{vprokey_out_variable.key.private_key}}""
+        content: "{{vprokey_out_variable.key.private_key}}"
         dest: "./loginkey_EC2_vprofile.pem"
         mode: 0600
 
