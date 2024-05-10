@@ -140,7 +140,7 @@
     path: vars/output_vars_IDs
     backup: yes
     # backup of original
-    block:
+    block |
     # insert the block below
       BastionSGid: "{{BastionSG_out_variable.group_id}}"
 
