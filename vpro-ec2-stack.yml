@@ -55,7 +55,7 @@
 
 
 # security group for the backend vprofile EC2 instances (rabbitmq, memcached, mysql)
-- name: Create the Security Group for Vprofile stack backend servers
+    - name: Create the Security Group for Vprofile stack backend servers
       ec2_group:
       # https://docs.ansible.com/ansible/latest/collections/amazon/aws/ec2_security_group_module.html
         name: vproStack-sg
@@ -73,8 +73,8 @@
             to_port: 80
             group_id: "{{vproELBSG_out_variable.group_id}}"
             # this allows port 80 traffic from the loadbalancer to the backend servers
-            # Note the use of group_id to specify the security group id of the loadbalancer
-
+            # Note the use of group_id to specify the security group id of the loadbalancer (above)
+        
           - proto: tcp
             from_port: 22
             to_port: 22
@@ -86,7 +86,7 @@
             # too complex for this project)
             # BastionSGid is not defined yet. It is from the bastion-instance.yml bastion SG registered as BastionSG_out_variable, and
             # is given as BastionSG_out_variable.group_id but can't directly be used here because its from a different yml file.
-            
+        
             # Solution: This variable has to be defined or stored during execution of bastion-instance.yml
             # Best way to do this is to append it from the bastion-instance.yml file in the same way that the VPC ids were 
             # piped into the vars/output_vars_IDs file from the vpc-setup.yml file blocks (at the end of the file)
