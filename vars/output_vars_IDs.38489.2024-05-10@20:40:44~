@@ -9,6 +9,3 @@ igwid: igw-0882b0ef12a3d2cd6
 pubRTid: rtb-0be1ef5492c48dec0
 NATGWid: nat-0d56dfadaaa97c668
 privRTid: rtb-0bd78816f1fafcabb
-# BEGIN ANSIBLE MANAGED BLOCK
-BastionSGid: sg-09b7d979501cedf1c
-# END ANSIBLE MANAGED BLOCK
