@@ -38,6 +38,7 @@
 # security group for Loadbalancer
     - name: Create the Security Group for the Load Balancer
       ec2_group:
+      # https://docs.ansible.com/ansible/latest/collections/amazon/aws/ec2_security_group_module.html
         name: vproELB-sg
         description: Allow port 80 from everywhere and all ports within the security group
         region: "{{region}}"
@@ -53,13 +54,49 @@
       register: vproELBSG_out_variable
 
 
+# security group for the backend vprofile EC2 instances (rabbitmq, memcached, mysql)
+- name: Create the Security Group for Vprofile stack backend servers
+      ec2_group:
+      # https://docs.ansible.com/ansible/latest/collections/amazon/aws/ec2_security_group_module.html
+        name: vproStack-sg
+        description: Allow port 22 from everywhere, and all ports within the security group
+        region: "{{region}}"
+        # this is from the vars/vprostacksetup vars file
+        vpc_id: "{{vpcid}}"
+        # this is from the vars/output_vars_IDs  vars file
+        purge_rules: no
+        # when run the ansible playbook repeatedly the rules are auto-updated even if SG is the same
+        # This prevents the rules from being purged and redone each time the ansible playbook is run
+        rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            group_id: "{{vproELBSG_out_variable.group_id}}"
+            # this allows port 80 traffic from the loadbalancer to the backend servers
+            # Note the use of group_id to specify the security group id of the loadbalancer
+
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            group_id = "{{BastionSGid}}"
+            # this allows all traffic from the Bastion host to all of the backend servers. The bastion host
+            # will be used to provision and run playbooks against the backend servers via SSH
+            # This is because the ansible-EC2-project21 instance is in default VPC and that will not be able to 
+            # SSH in directly to the backend servers that are on the vprofile VPC (unless we do VPC peering, but that is
+            # too complex for this project)
+            # BastionSGid is not defined yet. It is from the bastion-instance.yml bastion SG registered as BastionSG_out_variable, and
+            # is given as BastionSG_out_variable.group_id but can't directly be used here because its from a different yml file.
+            
+            # Solution: This variable has to be defined or stored during execution of bastion-instance.yml
+            # Best way to do this is to append it from the bastion-instance.yml file in the same way that the VPC ids were 
+            # piped into the vars/output_vars_IDs file from the vpc-setup.yml file blocks (at the end of the file)
+            # See teh bastion-instance.yml file (bottom) blockinfile module to append BastionSGid: "{{BastionSG_out_variable.group_id}}" 
+            # to the vars/output_vars_IDs file.
+
+      register: vprobackendEC2SG_out_variable
 
 
-# security group for the backend EC2 instances
-
-
-
-# create EC2 instances
+# create the backend vprofile EC2 instances
 
 
 
