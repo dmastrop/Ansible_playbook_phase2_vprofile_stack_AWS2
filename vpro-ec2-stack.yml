@@ -98,11 +98,11 @@
 
 # Update the security group above with its own SG id so that the backend servers can communicate with one another all all ports and protocols
     - name: Update the vproStackSG above so that backend servers can communiate with one another on all ports and protocols
-
       ec2_group:
         name: vproStack-sg
         # same SG as above
-        description: pdate the vproStackSG above so that backend servers can communiate with one another on all ports and protocols
+        # note the description must be exactly the same as well since we are modifying the original SG above
+        description: Allow port 22 from everywhere, and all ports within the security group
         region: "{{region}}"
         vpc_id: "{{vpcid}}"
         purge_rules: no
