@@ -9,3 +9,4 @@ rmq_ami: ami-0e001c9271cf7f3b9
 mysql_ami: ami-0e001c9271cf7f3b9
 
 region: us-east-1
+# add the region here as well for the vpro-ec2-stack.yml playbook importing.
