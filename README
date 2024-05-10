@@ -273,7 +273,7 @@ Use the ec2_instance from phase1 bastion-instance.yml as a model of how to confi
 
 
 
-
+#### test git push from ansible-EC2-project21 local repo
 
 
 
