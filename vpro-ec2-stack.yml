@@ -93,7 +93,7 @@
             # See teh bastion-instance.yml file (bottom) blockinfile module to append BastionSGid: "{{BastionSG_out_variable.group_id}}" 
             # to the vars/output_vars_IDs file.
 
-      register: vprobStackSG_out_variable
+      register: vproStackSG_out_variable
 
 
 # Update the security group above with its own SG id so that the backend servers can communicate with one another all all ports and protocols
@@ -109,16 +109,276 @@
         # this is important because this is an update to append rule not overwrite the current SG
         rules:
           - proto: all
-            group_id: "{{vprobStackSG_out_variable.group_id}}"
+            group_id: "{{vproStackSG_out_variable.group_id}}"
             # the rule is between all the servers
 
 
-
 # create the backend vprofile EC2 instances
+# IMPORTANT NOTE: ec2 module has been deprecated. Must use ec2_instance module and there are some minor changes
+# in the syntax with this module. See bastion-instance.yml for reference and model on how to configure these instances.
+# 5 instances in total: 1 nginx, 1 tomcat to host the vprofile app war, 1 memcached, 1 rabbitmq, and one mysql
+
+# Instance 1:
+    - name: Creating Nginx web01 EC2 instance
+      ec2_instance:
+      # https://docs.ansible.com/ansible/latest/collections/amazon/aws/ec2_instance_module.html  
+        key_name: "{{vprokey_out_variable.key.name}}"
+        region: "{{region}}"
+        # this is from vars/vprostacksetup
+        instance_type: t2.micro
+
+        #image: "{{bastion_ami}}"
+        image:
+          id: "{{nginx_ami}}"
+          # this is from the vars/vprostacksetup file that has all of the amis
+
+        wait: yes
+        # wait until it is healthy
+        wait_timeout: 300
+
+        # instance_tags is deprecated. Use tags or resource_tags instead
+        #instance_tags:
+        tags:
+          Name: "web01"
+          Project: Vprofile
+          Owner: DevOps Team
+
+        exact_count : 1
+        # Everytime playbook is run this will create a new instance. We don't want that:
+        # this uses the count_tag below to determine if the instance is created already. If so, it will not create
+        # a new instance.
+
+        # count_tag is only supported in ec2 and not ec2_instance module
+        # count_tag:
+        #   Name: "Bastion_host"
+        #   Project: Vprofile
+        #   Owner: DevOps Team
+        
+        #group_id: "{{BastionSG_out_variable.group_id}}"
+        #group_id is deprecated. Use security_group
+        security_group: "{{vproStackSG_out_variable.group_id}}"
+
+        vpc_subnet_id: "{{privsub1id}}"
+        # this is from the imported vars/output_vars_IDs file for the first private subnet
+        # All the backend infrastructure will be placed one of two private subnets
+        # the VPC ID vpcid variable is imported above.
+
+      register: web01_out_variable
+
+
+    - debug:
+        var: web01_out_variable
+
+
+# Instance 2:
+    - name: Creating tomcat app01 EC2 instance
+      ec2_instance:
+      # https://docs.ansible.com/ansible/latest/collections/amazon/aws/ec2_instance_module.html  
+        key_name: "{{vprokey_out_variable.key.name}}"
+        region: "{{region}}"
+        # this is from vars/vprostacksetup
+        instance_type: t2.micro
+
+        #image: "{{bastion_ami}}"
+        image:
+          id: "{{tomcat_ami}}"
+          # this is from the vars/vprostacksetup file that has all of the amis
+
+        wait: yes
+        # wait until it is healthy
+        wait_timeout: 300
+
+        # instance_tags is deprecated. Use tags or resource_tags instead
+        #instance_tags:
+        tags:
+          Name: "app01"
+          Project: Vprofile
+          Owner: DevOps Team
+
+        exact_count : 1
+        # Everytime playbook is run this will create a new instance. We don't want that:
+        # this uses the count_tag below to determine if the instance is created already. If so, it will not create
+        # a new instance.
+
+        # count_tag is only supported in ec2 and not ec2_instance module
+        # count_tag:
+        #   Name: "Bastion_host"
+        #   Project: Vprofile
+        #   Owner: DevOps Team
+        
+        #group_id: "{{BastionSG_out_variable.group_id}}"
+        #group_id is deprecated. Use security_group
+        security_group: "{{vproStackSG_out_variable.group_id}}"
+
+        vpc_subnet_id: "{{privsub1id}}"
+        # this is from the imported vars/output_vars_IDs file for the first private subnet
+        # All the backend infrastructure will be placed one of two private subnets
+        # the VPC ID vpcid variable is imported above.
+
+      register: app01_out_variable
+
+
+    - debug:
+        var: app01_out_variable
+
+
+# Instance 3:
+    - name: Creating  memcached mc01 EC2 instance
+      ec2_instance:
+      # https://docs.ansible.com/ansible/latest/collections/amazon/aws/ec2_instance_module.html  
+        key_name: "{{vprokey_out_variable.key.name}}"
+        region: "{{region}}"
+        # this is from vars/vprostacksetup
+        instance_type: t2.micro
+
+        #image: "{{bastion_ami}}"
+        image:
+          id: "{{memcached_ami}}"
+          # this is from the vars/vprostacksetup file that has all of the amis
+
+        wait: yes
+        # wait until it is healthy
+        wait_timeout: 300
+
+        # instance_tags is deprecated. Use tags or resource_tags instead
+        #instance_tags:
+        tags:
+          Name: "mc01"
+          Project: Vprofile
+          Owner: DevOps Team
+
+        exact_count : 1
+        # Everytime playbook is run this will create a new instance. We don't want that:
+        # this uses the count_tag below to determine if the instance is created already. If so, it will not create
+        # a new instance.
+
+        # count_tag is only supported in ec2 and not ec2_instance module
+        # count_tag:
+        #   Name: "Bastion_host"
+        #   Project: Vprofile
+        #   Owner: DevOps Team
+        
+        #group_id: "{{BastionSG_out_variable.group_id}}"
+        #group_id is deprecated. Use security_group
+        security_group: "{{vproStackSG_out_variable.group_id}}"
+
+        vpc_subnet_id: "{{privsub1id}}"
+        # this is from the imported vars/output_vars_IDs file for the first private subnet
+        # All the backend infrastructure will be placed one of two private subnets
+        # the VPC ID vpcid variable is imported above.
+
+      register: mc01_out_variable
+
+
+    - debug:
+        var: mc01_out_variable
+
+
+# Instance 4:
+    - name: Creating  RabbitMQ rmq01 EC2 instance
+      ec2_instance:
+      # https://docs.ansible.com/ansible/latest/collections/amazon/aws/ec2_instance_module.html  
+        key_name: "{{vprokey_out_variable.key.name}}"
+        region: "{{region}}"
+        # this is from vars/vprostacksetup
+        instance_type: t2.micro
+
+        #image: "{{bastion_ami}}"
+        image:
+          id: "{{rmq_ami}}"
+          # this is from the vars/vprostacksetup file that has all of the amis
+
+        wait: yes
+        # wait until it is healthy
+        wait_timeout: 300
+
+        # instance_tags is deprecated. Use tags or resource_tags instead
+        #instance_tags:
+        tags:
+          Name: "rmq01"
+          Project: Vprofile
+          Owner: DevOps Team
+
+        exact_count : 1
+        # Everytime playbook is run this will create a new instance. We don't want that:
+        # this uses the count_tag below to determine if the instance is created already. If so, it will not create
+        # a new instance.
+
+        # count_tag is only supported in ec2 and not ec2_instance module
+        # count_tag:
+        #   Name: "Bastion_host"
+        #   Project: Vprofile
+        #   Owner: DevOps Team
+        
+        #group_id: "{{BastionSG_out_variable.group_id}}"
+        #group_id is deprecated. Use security_group
+        security_group: "{{vproStackSG_out_variable.group_id}}"
+
+        vpc_subnet_id: "{{privsub1id}}"
+        # this is from the imported vars/output_vars_IDs file for the first private subnet
+        # All the backend infrastructure will be placed one of two private subnets
+        # the VPC ID vpcid variable is imported above.
+
+      register: rmq01_out_variable
+
+
+    - debug:
+        var: rmq01_out_variable
+
+
+# Instance 5:
+    - name: Creating  Mysql db01 EC2 instance
+      ec2_instance:
+      # https://docs.ansible.com/ansible/latest/collections/amazon/aws/ec2_instance_module.html  
+        key_name: "{{vprokey_out_variable.key.name}}"
+        region: "{{region}}"
+        # this is from vars/vprostacksetup
+        instance_type: t2.micro
+
+        #image: "{{bastion_ami}}"
+        image:
+          id: "{{mysql_ami}}"
+          # this is from the vars/vprostacksetup file that has all of the amis
+
+        wait: yes
+        # wait until it is healthy
+        wait_timeout: 300
+
+        # instance_tags is deprecated. Use tags or resource_tags instead
+        #instance_tags:
+        tags:
+          Name: "db01"
+          Project: Vprofile
+          Owner: DevOps Team
+
+        exact_count : 1
+        # Everytime playbook is run this will create a new instance. We don't want that:
+        # this uses the count_tag below to determine if the instance is created already. If so, it will not create
+        # a new instance.
+
+        # count_tag is only supported in ec2 and not ec2_instance module
+        # count_tag:
+        #   Name: "Bastion_host"
+        #   Project: Vprofile
+        #   Owner: DevOps Team
+        
+        #group_id: "{{BastionSG_out_variable.group_id}}"
+        #group_id is deprecated. Use security_group
+        security_group: "{{vproStackSG_out_variable.group_id}}"
+
+        vpc_subnet_id: "{{privsub1id}}"
+        # this is from the imported vars/output_vars_IDs file for the first private subnet
+        # All the backend infrastructure will be placed one of two private subnets
+        # the VPC ID vpcid variable is imported above.
+
+      register: db01_out_variable
+
+    - debug:
+        var: db01_out_variable
 
 
 
-# launch loaddbalancer
+# launch loaddbalancer for the nginx instance
 
 
 
