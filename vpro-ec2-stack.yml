@@ -96,6 +96,24 @@
       register: vprobStackSG_out_variable
 
 
+# Update the security group above with its own SG id so that the backend servers can communicate with one another all all ports and protocols
+    - name: Update the vproStackSG above so that backend servers can communiate with one another on all ports and protocols
+
+      ec2_group:
+        name: vproStack-sg
+        # same SG as above
+        description: pdate the vproStackSG above so that backend servers can communiate with one another on all ports and protocols
+        region: "{{region}}"
+        vpc_id: "{{vpcid}}"
+        purge_rules: no
+        # this is important because this is an update to append rule not overwrite the current SG
+        rules:
+          - proto: all
+            group_id: "vprobStackSG_out_variable.group_id"
+            # the rule is between all the servers
+
+
+
 # create the backend vprofile EC2 instances
 
 
