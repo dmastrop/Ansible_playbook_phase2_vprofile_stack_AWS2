@@ -261,8 +261,12 @@ provision both the VPC stack and the bastion host.
 
 This is the ansible playbook to provision the backend EC2 instances for the vprofile stack implementation.
 
+See important phase1 note about output_vars_IDs file. This file needs to be in synch on both local respos and github with latest IDs
+
 Note that ec2 module is deprecated and ec2_instance module is now used with some minor required changes between the two.
 Use the ec2_instance from phase1 bastion-instance.yml as a model of how to configure the ec2_instance task for backend ansible playbook.
+
+
 
 
 

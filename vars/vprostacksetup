@@ -1,0 +1,11 @@
+# This is the varaibles file for the vprofile stack backend server infrastructure
+# For the amis the backend servers will use the same OS. Try Ubuntu 22.04 LTS
+# ami-0e001c9271cf7f3b9
+# stack is focused on ubuntu
+nginx_ami: ami-0e001c9271cf7f3b9
+tomcat_ami: ami-0e001c9271cf7f3b9
+memcached_ami: ami-0e001c9271cf7f3b9
+rmq_ami: ami-0e001c9271cf7f3b9
+mysql_ami: ami-0e001c9271cf7f3b9
+
+region: us-east-1

@@ -7,3 +7,31 @@
   tasks: 
     - name: Import the VPC setup variables file that has vars for VPC and for bastion host
       include_vars: vars/output_vars_IDs
+      # it is important to keep the output_vars_IDs file synched between the both local repos and the remote github repo
+      #  This is becuase the file is only generated on the ansible-EC2-project21 instance and needs to be updated (pulled into)
+      # the local VSCode repo so that next push from VSCode to remote repo does not have stale older output_vars_IDs
+      # If the file is stale or older the entire setup will not work.
+
+
+    - name: Import the vprofile application stack instance (EC2) setup variables file (amis, etc.)
+      include_vars: vars/vprostacksetup
+
+
+    - name: Create vprofile EC2 instances key for backend servers (SSH)
+      ec2_key:
+        name: vprokey
+        region: "{{region}}"
+
+      register: vprokey_out_variable
+
+
+    - name: Save the private key into file loginkey_EC2_vprofile.pem
+      copy:
+        content: "{{vprokey_out_variable.key.private_key}}""
+        dest: "./loginkey_EC2_vprofile.pem"
+        mode: 0600
+
+      when: vprokey_out_variable.changed
+      # only save key if the key has been created. Otherwise skip the saving and keep the key as is.
+
+    
