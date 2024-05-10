@@ -35,3 +35,36 @@
       # only save key if the key has been created. Otherwise skip the saving and keep the key as is.
 
     
+# security group for Loadbalancer
+    - name: Create the Security Group for the Load Balancer
+      ec2_group:
+        name: vproELB-sg
+        description: Allow port 80 from everywhere and all ports within the security group
+        region: "{{region}}"
+        # this is from the vars/vprostacksetup vars file
+        vpc_id: "{{vpcid}}"
+        # this is from the vars/output_vars_IDs  vars file
+        rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+
+      register: vproELBSG_out_variable
+
+
+
+
+# security group for the backend EC2 instances
+
+
+
+# create EC2 instances
+
+
+
+# launch loaddbalancer
+
+
+
+
