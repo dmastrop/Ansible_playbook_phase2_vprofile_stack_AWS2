@@ -133,20 +133,19 @@
         var: bastionHost_out_variable
 
 
-- name: Insert/Update the BastionSG_out_variable.group_id in the vars/output_vars_IDs file
-  # this file already has all of the IDs from vpc-setup.yml. We are adding on the Bastion Host SG id so
-  # that it can be used in the vpro-ec2-stack.yml backend EC2 instance SG definitions (vprobackendEC2SG_out_variable)
-  blockinfile:
-  # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/blockinfile_module.html
-    path: vars/output_vars_IDs
-    backup: yes
-    # backup of original
-    # insert the block below
-    block: |
-      BastionSGid: {{BastionSG_out_variable.group_id}}
-
+    - name: Insert/Update the BastionSG_out_variable.group_id in the vars/output_vars_IDs file
+      # this file already has all of the IDs from vpc-setup.yml. We are adding on the Bastion Host SG id so
+      # that it can be used in the vpro-ec2-stack.yml backend EC2 instance SG definitions (vprobackendEC2SG_out_variable)
+      blockinfile:
+      # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/blockinfile_module.html
+        path: vars/output_vars_IDs
+        backup: yes
+        # backup of original
+        # insert the block below
+        block: |
+          BastionSGid: {{BastionSG_out_variable.group_id}}
     
-
+    
 
 
 
