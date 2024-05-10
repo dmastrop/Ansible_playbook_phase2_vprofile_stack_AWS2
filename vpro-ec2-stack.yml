@@ -78,7 +78,7 @@
           - proto: tcp
             from_port: 22
             to_port: 22
-            group_id = "{{BastionSGid}}"
+            group_id: "{{BastionSGid}}"
             # this allows all traffic from the Bastion host to all of the backend servers. The bastion host
             # will be used to provision and run playbooks against the backend servers via SSH
             # This is because the ansible-EC2-project21 instance is in default VPC and that will not be able to 
@@ -93,7 +93,7 @@
             # See teh bastion-instance.yml file (bottom) blockinfile module to append BastionSGid: "{{BastionSG_out_variable.group_id}}" 
             # to the vars/output_vars_IDs file.
 
-      register: vprobackendEC2SG_out_variable
+      register: vprobStackSG_out_variable
 
 
 # create the backend vprofile EC2 instances
