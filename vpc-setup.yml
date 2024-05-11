@@ -288,6 +288,7 @@
 
 
     - name: Create variables file for vpc output IDs
+    # add the region as well
       copy:
-        content: "vpcid: {{vpcoutvariable.vpc.id}}\npubsub1id: {{ pubsub1_out_variable.subnet.id }}\npubsub2id: {{ pubsub2_out_variable.subnet.id }}\npubsub3id: {{ pubsub3_out_variable.subnet.id }}\nprivsub1id: {{ privsub1_out_variable.subnet.id }}\nprivsub2id: {{ privsub2_out_variable.subnet.id }}\nprivsub3id: {{ privsub3_out_variable.subnet.id }}\nigwid: {{ igw_out_variable.gateway_id }}\npubRTid: {{ publicroutingtable_out_variable.route_table.id }}\nNATGWid: {{ NATGW_out_variable.nat_gateway_id }}\nprivRTid: {{ privateroutingtable_out_variable.route_table.id }}\n"
+        content: "region: {{ region }}\nvpcid: {{vpcoutvariable.vpc.id}}\npubsub1id: {{ pubsub1_out_variable.subnet.id }}\npubsub2id: {{ pubsub2_out_variable.subnet.id }}\npubsub3id: {{ pubsub3_out_variable.subnet.id }}\nprivsub1id: {{ privsub1_out_variable.subnet.id }}\nprivsub2id: {{ privsub2_out_variable.subnet.id }}\nprivsub3id: {{ privsub3_out_variable.subnet.id }}\nigwid: {{ igw_out_variable.gateway_id }}\npubRTid: {{ publicroutingtable_out_variable.route_table.id }}\nNATGWid: {{ NATGW_out_variable.nat_gateway_id }}\nprivRTid: {{ privateroutingtable_out_variable.route_table.id }}\n"
         dest: vars/output_vars_IDs

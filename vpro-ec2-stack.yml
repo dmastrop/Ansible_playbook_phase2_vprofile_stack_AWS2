@@ -381,6 +381,7 @@
 
     - debug:    
         var: db01_out_variable.instance_ids[0]
+        # this works well
 
     # - debug:    
     #     var: db01_out_variable.instance_ids
@@ -388,6 +389,7 @@
     
     - debug:
         var: db01_out_variable.instances[0].instance_id
+        # this works well
 
     # - debug:    
     #     var: db01_out_variable.tagged_instances[0].id
@@ -401,9 +403,100 @@
         region: "{{region}}"
         state: present
         instance_ids:
-          - 
+          - "{{web01_out_variable.instances[0].instance_id}}"
+          # this is the latest syntax. See config testing above with db01. 
+          # An alternative is web01_out_variable.instance_ids[0]
+          # This will add the nginx instance to the loadbalancer via its instance_id
+        purge_instance_ids: true
+        # this will purge any instances above that are currently running that are not in the list above
+        security_group_ids: "{{vproELBSG_out_variable.group_id}}"
+        subnets:
+          - "{{pubsub1id}}"
+          - "{{pubsub2id}}"
+          - "{{pubsub3id}}"
+          # these are the ids of the public subnets. These are in the vars/output_vars_IDs file
+        listeners:
+          - protocol: http #options are http, https, ssl, tcp
+            load_balancer_port: 80
+            instance_port: 80
+
+    - name: Insert and update hosts IP and name for the EC2 instances, in file provision-stack/group_vars/hostsip
+      blockinfile:
+        path: provision-stack/group_vars/hostsip
+        # This file will be used to provision the EC2 instances from the bastion host via SSH. (I tested this manually and it works fine)
+        # the correct latest syntax for private_ip according to debugs is 
+        # db_out_variable.instances[0].private_ip_address
+        block: |
+          web01_ip: {{ web01_out_variable.instances[0].private_ip_address }}
+          app01_ip: {{ app01_out_variable.instances[0].private_ip_address }}
+          rmq01_ip: {{ rmq01_out_variable.instances[0].private_ip_address }}
+          mc01_ip: {{ mc01_out_variable.instances[0].private_ip_address }}
+          db01_ip: {{ db01_out_variable.instances[0].private_ip_address }}
 
 
+    - name: Copy the EC2 login SSH key (pem) to the provision_stack directory that is used above as well
+        # the key is in the current working directory from the earier task (restated below):
+        #- name: Save the private key into file loginkey_EC2_vprofile.pem
+        #  copy:
+        #    content: "{{vprokey_out_variable.key.private_key}}"
+        #    dest: "./loginkey_EC2_vprofile.pem"
+        #    mode: 0600
+        # the bastion host will execute using this file to SSH to the EC2 instances and provision them.
+        # The provision-stack directory will have all the ansible playbooks to provision the services onto the EC2 instances
+        # group_vars will have the vars files that will be used in the playbook.
+      copy: 
+        src: loginkey_EC2_vprofile.pem
+        dest: provision-stack/loginkey_EC2_vprofile.pem
+        mode: '0400'
 
+
+# Prepare the inventory file
+    - name: Insert and update the inventory file as provision-stack/inventory-vpro file
+      blockinfile:
+        path: provision-stack/inventory-vpro
+        # this is dynamic provisioning of the inventory file based upon the latest deloyment in AWS
+        # cntl is the control machine which is ansible-EC2-project21 controller running the ansible
+        # the first part of the file prepares the host entires for the EC2 instances
+        # Below this are the groups
+        # Below that the groups are created as children under a parent group stack_inst
+        # Then the parent group is configured with the vars username and pem key information so that ssh connections can be made
+        # to the servers in the parent group
+        block: |
+          web01 ansible_host={{ web01_out_variable.instances[0].private_ip_address }}
+          app01 ansible_host={{ app01_out_variable.instances[0].private_ip_address }}
+          rmq01 ansible_host={{ rmq01_out_variable.instances[0].private_ip_address }}
+          mc01 ansible_host={{ mc01_out_variable.instances[0].private_ip_address }}
+          db01 ansible_host={{ db01_out_variable.instances[0].private_ip_address }}
+          cntl ansible_host=127.0.0.1 ansible_connection=local
+
+          [websrvgrp]
+          web01
+
+          [appsrvgrp]
+          app01
+
+          [rmqsrvgrp]
+          rmq01
+
+          [mcsrvgrp]
+          mc01
+
+          [dbsrvgrp]
+          db01
+
+          [control]
+          cntl
+
+          [stack_inst:children]
+          websrvgrp
+          appsrvgrp
+          rmqsrvgrp
+          mcsrvgrp
+          dbsrvgrp
+
+          [stack_inst:vars]
+          ansible_user=ubuntu
+          ansible_ssh_private_key_file=loginkey_EC2_vprofile.pem
+          #ansible_python_interpreter=/usr/bin/python3
 
 

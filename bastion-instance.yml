@@ -142,6 +142,7 @@
         backup: yes
         # backup of original
         # insert the block below
+        # no quotes necessary in the block
         block: |
           BastionSGid: {{BastionSG_out_variable.group_id}}
     
