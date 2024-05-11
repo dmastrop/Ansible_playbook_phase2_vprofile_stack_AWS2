@@ -375,18 +375,34 @@
 
     - debug:
         var: db01_out_variable
-    - debug:    
-        var: db01_out_variable.instances.instance_id
+
+    # - debug:    
+    #     var: db01_out_variable.instances.instance_id
+
     - debug:    
         var: db01_out_variable.instance_ids[0]
-    - debug:    
-        var: db01_out_variable.instance_ids
-    - debug:    
-        var: db01_out_variable.tagged_instances[0].id
 
+    # - debug:    
+    #     var: db01_out_variable.instance_ids
+    # the above works but returns a list
+    
+    - debug:
+        var: db01_out_variable.instances[0].instance_id
+
+    # - debug:    
+    #     var: db01_out_variable.tagged_instances[0].id
 
 
 # launch loaddbalancer for the nginx instance
+    - local_action:
+        module: ec2_elb_lb
+        # https://docs.ansible.com/ansible/latest/collections/amazon/aws/elb_classic_lb_module.html#ansible-collections-amazon-aws-elb-classic-lb-module
+        name: "vprofile-elb"
+        region: "{{region}}"
+        state: present
+        instance_ids:
+          - 
+
 
 
 
