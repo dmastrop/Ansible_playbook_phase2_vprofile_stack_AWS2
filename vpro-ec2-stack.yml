@@ -375,6 +375,7 @@
 
     - debug:
         var: db01_out_variable
+        var: db01_out_variable.instances.instance_id
 
 
 
