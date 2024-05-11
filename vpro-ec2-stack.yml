@@ -375,9 +375,13 @@
 
     - debug:
         var: db01_out_variable
-        #var: db01_out_variable.instances.instance_id
+    - debug:    
+        var: db01_out_variable.instances.instance_id
+    - debug:    
         var: db01_out_variable.instance_ids[0]
+    - debug:    
         var: db01_out_variable.instance_ids
+    - debug:    
         var: db01_out_variable.tagged_instances[0].id
 
 
