@@ -243,18 +243,16 @@ plays a critical roll in the ansible phase2 rollout of the backend infrastructur
 
 IMPORTANT: it is important after getting VPC setup to pull the new output_vars_IDs file from the EC2 instance into VSCode to get rid of the older 
 file in VSCode and update it, so that the next push from VSCode has the same latest current IDs
+The same will be true for the inventory-vpro file and the hostsip file that will be created by the vpro-ec2-stack.yml playbook.
+Synch this from the ansible-EC-project21 instance to github and then pull it to VSCode.
 
 
 
 # Consolidate the vars file for vpc_setup and bastion_setup all into vpc_setup. Put the bastion vars info in the vpc_setup
 
 
-
-
 # import vpc-setup.yml and bastion-instance.yml phase1 ansible playbooks into site.yml, which will be run to 
 provision both the VPC stack and the bastion host.
-
-
 
 
 # vpro-ec2-stack.yml
@@ -265,6 +263,90 @@ See important phase1 note about output_vars_IDs file. This file needs to be in s
 
 Note that ec2 module is deprecated and ec2_instance module is now used with some minor required changes between the two.
 Use the ec2_instance from phase1 bastion-instance.yml as a model of how to configure the ec2_instance task for backend ansible playbook.
+
+
+## Keys (keypairs)
+
+These do not need to be regenerated and the bastion host that is created is created with the same key (see above). 
+The same will be true once we add ec2_instance to create all of the backend server infra. 
+The original key can be used with the new instances each time.
+
+## the tasks for the vpro--ec2-stack.yml are the following
+
+First import vars/output_vars_IDs and vars/vprostacksetup
+output_vars_IDs has most of the VPC related AWS ids
+vprostatcksetup has the amis for the EC2 instances web01, app01, mc01, rmq01, and db01
+
+Create the keypair for the EC2 instances
+
+Create the security groups for theloadbalancer and the 5 EC2 instances 
+
+Create the 5 vprofile EC2 instance using the ec2_instance module
+This will utilize the vprostacksetup vars file for the ami ids.
+Use ubuntu 22 for this project
+Use the security group for the EC2 instances defined in an earlier task
+Use the EC2 keypair loginkey_EC2_vprofile.pem 
+Once the EC2 instances are up, test SSH from the bastion host.  Manually create the pem from the pem 
+in the ansible-EC2-project21 controller instance (keys will not be pushed to github due to .gitignore)
+All of the EC2 instances will be created in privsub1id.  If HA is required, create the peer EC2 instance in privsub2id
+For now do not use HA for the EC2 instances
+
+Launch the loadbalancer with the nginx EC2 instance web01 as the target instance. Port 80 listener on the loadbalancer
+
+Use blockinfile module to create the hostsip file in provision-stack folder in the repository. This will be used in phase3
+
+Copy the loginkey_EC2_vprofile.pem key to the provision-stacks directory in the repository
+
+Use blockinfile module to create  and insert the inventory file in provision-stack folder. The name of the file is inventory-vpro
+This file will be used in phase3 to provison the services onto the EC2 instances for the full stack appicaton deployment.
+
+The following host names are used
+web01 for the nginx for traffic redirection to the EC2 instances below, using the Application Loadbalancer frontend
+(the web01 will be the target instance)
+
+app01 for the tomcat server which will host the vprofile java app (.war file installed)
+
+rmq01 for rabbitMQ server
+
+mc01 for memcached server
+
+db01 for the mysql db
+
+IMPORTANT: Once again after running the vpc-setup.yml push the output_vars_IDs file from the ansible controller
+to github repo and then pull to VSCode so that VSCode has latest and does not overwrite when committing code from VSCode 
+to the github repo
+Same with after running the vpro-ec2-stack.yml playbook. Push the provision-stack/group_vars/hostsip and the
+provisonstack/inventory-vpro files from the ansible controller to the github repo and then pull the files to VSCode so that
+VSCode does not overwrite these files on the next commit/push from VSCode
+
+
+
+# Phase 2 deletion
+1. Delete the bastion host EC2 instance and the 5 stack EC2 instances. Keep the ansible contoller ansible-EC2-project21
+2. Delete the NAT GW
+3. Release the EIP (Elastic IP)
+4. Delete the VPC. This will get rid of all of the other network objects except the Security pem keys. Keep those for the
+next time the setup is brought up (bastion host pem key and the EC2 instances pem key)
+
+
+
+
+
+
+
+# Overview for project23 (vprofile-stack-phase3 branch)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
