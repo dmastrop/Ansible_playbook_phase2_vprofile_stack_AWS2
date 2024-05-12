@@ -359,7 +359,7 @@ next time the setup is brought up (bastion host pem key and the EC2 instances pe
 
 
 
-#### test git push from ansible-EC2-project21 local repo
+
 
 
 
